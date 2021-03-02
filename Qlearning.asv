@@ -1,7 +1,7 @@
 %% Initialization
 %  Initialize the world, Q-table, and hyperparameters
 
-world = 3;
+world = 2;
 state = gwinit(world);
 gwdraw();
 
@@ -14,16 +14,15 @@ Q = -1 + 2*rand(state_size_y,state_size_x,action_size);
 
 %Hyperparameters
 episodes = 1000;
-epsilon = 0.1;  %   exploration factor
+epsilon = 0.1;  exploration factor
 learningRate = 0.5;
 gamma = 0.9;        %discount factor
-prob_a = ones(1,length(actions))/length(actions); %uniform probability
+prob_a = ones(1,length(actions)); %uniform
 
 %% Training loop
 %  Train the agent using the Q-learning algorithm.
 
 for episode = 1:episodes
-    %initiate new rndm start pos
     gwinit(world);
     state = gwstate();
     while state.isterminal~=1 %Run until agent reaches goal 
@@ -40,9 +39,7 @@ for episode = 1:episodes
         
         Q(state_y,state_x, a) = (1-learningRate)*Q(state_y,state_x, a)...
             + learningRate*(r + gamma*V(state_y_next,state_x_next));
-       if ~state.isvalid
-           Q(state_y,state_x, a) = -inf;
-       end
+        
     end
 end
 
@@ -62,10 +59,10 @@ while state.isterminal~=1 %Run until agent reaches terminal
 	
     [a, oa] = chooseaction(Q, state_y, state_x, actions, prob_a, 0);
 	state = gwaction(oa);
-    gwdraw("Policy", getpolicy(Q))
+    gwdraw()
     pause(0.1)
 
 end 
 
-%P = getpolicy(Q);
-%gwdrawpolicy(P)
+P = getpolicy(Q)
+gwdrawpolicy(P)
